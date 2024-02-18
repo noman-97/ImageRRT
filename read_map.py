@@ -1,31 +1,32 @@
+"""
+This module includes the following functions for transforming an RGB image into a grayscale maze for path planning:
+ - 'get_bnw_image'
+ - 'get_start_end_nodes'
+ - 'confirm_final_nodes'
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 
 
-
-
-
 def get_bnw_image(filepath):
-
     """
         takes an image path as input and returns a black and white image as output.
     
-        Parameters:
+        Parameters
+        ------------------
         - filepath: A string representing the path to the image file ('proj/xyz.png')
         
-        Returns:
-        - image: A black and white image object
-        
-
-
+        Returns
+        ------------------
+        - image: A black and white image object 
     """
-
     # Open image and convert to grayscale
     orig_image = Image.open(filepath).convert('RGB')
     image=orig_image.convert("L")
 
-    # Assign threshold value (0 - Black/Obstacle, 255 - White/Path)
+    # threshold value (0 - Black/Obstacle, 255 - White/Path)
     threshold=200
     th=lambda x : 255 if x > threshold else 0
 
@@ -36,29 +37,24 @@ def get_bnw_image(filepath):
     return image
 
 
-
-
 def get_start_end_nodes(image):
-
     """
-    
         takes a black and white image as input (converts RGB images), allows the user to choose a start and end point via two clicks, and returns the corresponding points.
         
-        Parameters:
+        Parameters
+        ------------------
         - image: A black and white image object
         
-        Returns:
+        Returns
+        ------------------
         - start_node: A numpy array representing the coordinates of the start point
         - end_node: A numpy array representing the coordinates of the end point
-    
-
     """
 
-    # Prep image for display
     fig, ax = plt.subplots()
     plt.imshow(image, cmap='gray')
 
-    # Initialize node list that contains start and end node
+    # node list that contains start and end node
     nodes_list=[]
     
 
@@ -71,12 +67,9 @@ def get_start_end_nodes(image):
         x_val, y_val = event.xdata, event.ydata
 
         # Print coordinates for confirmation
-
         print("Coordinate chosen: ", (np.round(x_val.astype(int)), np.round(y_val.astype(int))))
 
-        # Add coordinates to nodes_list
         nodes_list.append((x_val, y_val))
-
 
         # Break after two nodes selected
         if len(nodes_list) == 2:
@@ -86,13 +79,7 @@ def get_start_end_nodes(image):
 
     # Call inner function, set event as button press
     map_event=fig.canvas.mpl_connect("button_press_event", select_nodes)
-
-
-    # Display image
     plt.show()
-
-
-
 
     # Get temporary start node coordinates from nodes_list
     float_start_node=nodes_list[0]
@@ -110,24 +97,15 @@ def get_start_end_nodes(image):
     return start_node,end_node
 
 
-
-
-
-
 def confirm_final_nodes(image, start_node, end_node):
-
-
     """
-    
         takes a black and white image, as well two arrays with start/end node coordinates as input, and displays the coordinates as blue (start) and red (end) boxes on the image.
         
-        Parameters:
+        Parameters
+        ------------------
         - image: A black and white image object
         - start_node: Array of start node coordinates (x, y)
         - end_node: Array of end node coordinates (x, y)
-        
-    
-
     """
 
     # Copy black and white image, convert to RGB
@@ -136,20 +114,13 @@ def confirm_final_nodes(image, start_node, end_node):
     # Width variable, each side of final square is equal to 2*width
     width = 10
 
-    # Change start node coordinate colour to blue
+    # Change start node coordinate colour to blue, and end coordinates to red
     check_image[start_node[1]-width:start_node[1]+width,start_node[0]-width:start_node[0]+width]=[0,0,255]
-
-    # Change end node cooordinate colour to red
     check_image[end_node[1]-width:end_node[1]+width,end_node[0]-width:end_node[0]+width]=[255,0,0]
 
-    # Display image
     fig, ax = plt.subplots()
     ax.imshow(check_image)
     plt.show()
-
-
-
-
 
 
 def main():
@@ -166,13 +137,11 @@ def main():
     # Choose and acquire start/end node coordinates
     start,end=get_start_end_nodes(grayimage)
 
-    # Print warning statement in case chosen coordinates are placed on an obstacle
+    # Warning in case chosen coordinates are placed on an obstacle
     if np.asarray(grayimage)[start[1],start[0]]==0 or np.asarray(grayimage)[end[1],end[0]]==0:
         print("Warning: chosen coordinates are inside an obstacle.")
         
-
-
-    # Show chosen nodes
+    # Show final nodes
     if confirmation:
         confirm_final_nodes(grayimage,start,end)
 
