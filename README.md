@@ -32,3 +32,7 @@ Some adjustable variables for customizing searches.
 | `distance_to_goal_radius`   | radius for goal proximity in solution checking     | `visualize.py`, `rrt_planner()`    |
 | `threshold`   | threshold for image conversion     | `read_map.py`, `get_bnw_image()`    |
 
+## References
+
+The maps used in this project are sourced from the [MovingAI Starcraft 2D Pathfinding Benchmarks](https://movingai.com/benchmarks/grids.html)
+
