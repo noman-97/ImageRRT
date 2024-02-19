@@ -322,7 +322,7 @@ def main():
 
     # variables
     # filepath to image
-    filepath="planningalg/map/path3.png"
+    filepath="maps/path2.png"
 
     # max iterations for searching
     max_search_iters=4000
